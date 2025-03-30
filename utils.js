@@ -163,6 +163,70 @@ async function saveHtml(page, filename) {
 }
 
 /**
+ * 截取页面截图并保存
+ * @param {Object} page - Playwright页面对象
+ * @param {string} path - 截图保存路径
+ * @returns {Promise<void>}
+ */
+async function takeScreenshot(page, path) {
+  try {
+    log(`正在截取页面截图: ${path}`, 'debug');
+    await page.screenshot({ path });
+    log(`截图已保存至: ${path}`, 'info');
+  } catch (error) {
+    log(`截图失败: ${error.message}`, 'error');
+  }
+}
+
+/**
+ * 截取完整网页大小的截图并保存
+ * @param {Object} page - Playwright页面对象
+ * @param {string} path - 截图保存路径
+ * @returns {Promise<void>}
+ */
+async function takeFullPageScreenshot(page, path) {
+  try {
+    log(`正在截取完整网页截图: ${path}`, 'debug');
+    await page.screenshot({ 
+      path,
+      fullPage: true // 设置为true，捕获完整网页而不仅是视窗
+    });
+    log(`完整网页截图已保存至: ${path}`, 'info');
+  } catch (error) {
+    log(`完整网页截图失败: ${error.message}`, 'error');
+  }
+}
+
+/**
+ * 保存错误页面截图（完整网页大小）
+ * @param {Object} page - Playwright页面对象
+ * @param {string} errorName - 错误名称
+ * @returns {Promise<string>} - 保存的截图路径
+ */
+async function saveErrorFullPageScreenshot(page, errorName) {
+  try {
+    // 创建保存截图的目录
+    const screenshotDir = path.join(__dirname, 'screenshots');
+    if (!fs.existsSync(screenshotDir)) {
+      fs.mkdirSync(screenshotDir, { recursive: true });
+    }
+    
+    // 生成带时间戳的文件名
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const screenshotPath = path.join(screenshotDir, `${errorName}_${timestamp}.png`);
+    
+    // 保存错误截图（完整网页大小）
+    log(`保存完整网页错误截图: ${screenshotPath}`, 'info');
+    await takeFullPageScreenshot(page, screenshotPath);
+    
+    return screenshotPath;
+  } catch (error) {
+    log(`保存完整网页错误截图失败: ${error.message}`, 'error');
+    return null;
+  }
+}
+
+/**
  * 等待新窗口打开并获取窗口对象
  * @param {Object} context - Playwright浏览器上下文对象
  * @returns {Promise<Object>} 新打开的页面对象
@@ -442,22 +506,6 @@ async function analyzeFormFields(page) {
   } catch (error) {
     log(`分析表单字段失败: ${error.message}`, 'error');
     return [];
-  }
-}
-
-/**
- * 截取页面截图并保存
- * @param {Object} page - Playwright页面对象
- * @param {string} path - 截图保存路径
- * @returns {Promise<void>}
- */
-async function takeScreenshot(page, path) {
-  try {
-    log(`正在截取页面截图: ${path}`, 'debug');
-    await page.screenshot({ path });
-    log(`截图已保存至: ${path}`, 'info');
-  } catch (error) {
-    log(`截图失败: ${error.message}`, 'error');
   }
 }
 
@@ -813,8 +861,10 @@ module.exports = {
   analyzeButtons,
   analyzeFormFields,
   takeScreenshot,
+  takeFullPageScreenshot,
   randomDelay,
   fillRegistrationForm,
   submitForm,
-  handleFinalConfirmation
+  handleFinalConfirmation,
+  saveErrorFullPageScreenshot
 };

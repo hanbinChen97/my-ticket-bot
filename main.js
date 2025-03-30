@@ -55,6 +55,8 @@ async function main() {
     if (!tableExists) {
       utils.log('未找到课程表格，可能需要调整选择器', 'warn');
       await utils.saveHtml(page, 'error_not_found_table');
+      // 保存完整网页大小的截图
+      await utils.saveErrorFullPageScreenshot(page, 'error_not_found_table');
       return;
     }
     
@@ -69,6 +71,8 @@ async function main() {
     if (!targetCourse.found) {
       utils.log('未找到目标课程，请检查时间设置或尝试其他时间段', 'error');
       await utils.saveHtml(page, 'error_target_not_found');
+      // 保存完整网页大小的截图
+      await utils.saveErrorFullPageScreenshot(page, 'error_target_not_found');
       return;
     }
     
@@ -94,6 +98,8 @@ async function main() {
     } catch (error) {
       utils.log(`无法获取新窗口: ${error.message}`, 'error');
       await utils.saveHtml(page, 'error_no_popup');
+      // 保存完整网页大小的截图
+      await utils.saveErrorFullPageScreenshot(page, 'error_no_popup');
       return;
     }
     
@@ -140,6 +146,8 @@ async function main() {
     if (!confirmButton) {
       utils.log('无法找到确认按钮，无法继续', 'error');
       await utils.saveHtml(popupPage, 'error_no_confirm_button');
+      // 保存完整网页大小的截图
+      await utils.saveErrorFullPageScreenshot(popupPage, 'error_no_confirm_button');
       return;
     }
     
@@ -192,6 +200,8 @@ async function main() {
     if (!formFilled) {
       utils.log('表单填写失败，无法继续', 'error');
       await utils.saveHtml(formPage, 'error_form_fill');
+      // 保存完整网页大小的截图，这是重点需求
+      await utils.saveErrorFullPageScreenshot(formPage, 'error_form_fill');
       return;
     }
     
@@ -202,6 +212,8 @@ async function main() {
     
     if (!submitResult) {
       utils.log('表单提交可能有问题，但仍继续尝试处理最终确认页面', 'warn');
+      // 在表单提交错误时保存完整网页截图
+      await utils.saveErrorFullPageScreenshot(formPage, 'error_form_submit');
     }
     
     // 添加最终确认步骤：处理确认页面，点击最终确认按钮
@@ -212,11 +224,15 @@ async function main() {
       utils.log('🎉🎉🎉 恭喜！整个预订流程已成功完成', 'info');
     } else {
       utils.log('预订流程遇到问题，可能未成功完成', 'warn');
+      // 在最终确认页面出现问题时保存完整网页截图
+      await utils.saveErrorFullPageScreenshot(formPage, 'error_final_confirmation');
     }
     
   } catch (error) {
     utils.log(`发生错误: ${error.message}`, 'error');
     await utils.saveHtml(page, 'error_page');
+    // 在发生任何意外错误时保存完整网页截图
+    await utils.saveErrorFullPageScreenshot(page, 'error_unexpected');
   } finally {
     // 关闭浏览器
     utils.log('关闭浏览器', 'info');
