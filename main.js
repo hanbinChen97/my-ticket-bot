@@ -42,7 +42,7 @@ async function main() {
     
     // 等待页面加载完成
     utils.log('等待页面加载完成', 'info');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     utils.log('成功加载目标网站', 'info');
     
@@ -104,7 +104,7 @@ async function main() {
     }
     
     // 等待弹出窗口加载完成
-    await popupPage.waitForLoadState('networkidle');
+    await popupPage.waitForLoadState('domcontentloaded');
     utils.log('弹出窗口加载完成', 'info');
     
     // 保存弹出窗口的HTML内容

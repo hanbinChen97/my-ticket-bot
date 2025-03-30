@@ -34,7 +34,11 @@ function log(message, level = 'info') {
 async function waitForElement(page, selector, timeout = config.browser.timeout) {
   try {
     log(`等待元素出现: ${selector}`, 'debug');
-    return await page.waitForSelector(selector, { timeout });
+    // 使用state: 'attached'而不是默认的'visible'可以提高速度
+    return await page.waitForSelector(selector, { 
+      timeout,
+      state: 'attached' // 只要元素存在于DOM中就继续，不必等待可见
+    });
   } catch (error) {
     log(`等待元素超时: ${selector}`, 'error');
     throw new Error(`等待元素超时: ${selector}`);
@@ -243,15 +247,16 @@ async function waitForNewPage(context) {
     const newPagePromise = new Promise(resolve => {
       context.once('page', async page => {
         log('检测到新窗口打开', 'info');
-        // 等待页面加载完成
-        await page.waitForLoadState('networkidle');
+        // 使用domcontentloaded而不是networkidle
+        await page.waitForLoadState('domcontentloaded');
         resolve(page);
       });
     });
     
-    // 设置超时
+    // 设置更短的超时时间
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('等待新窗口超时')), config.browser.timeout);
+      setTimeout(() => reject(new Error('等待新窗口超时')), 
+        Math.min(config.browser.timeout, 10000)); // 最多等待10秒
     });
     
     // 等待新窗口或超时
@@ -515,7 +520,8 @@ async function analyzeFormFields(page) {
  * @param {number} max - 最大延迟时间（毫秒）
  * @returns {Promise<void>}
  */
-async function randomDelay(min = 1000, max = 3000) {
+async function randomDelay(min = 300, max = 800) {
+  // 减少随机延迟的时间范围
   const delay = Math.floor(Math.random() * (max - min + 1)) + min;
   log(`随机延迟 ${delay}ms`, 'debug');
   return new Promise(resolve => setTimeout(resolve, delay));
@@ -727,8 +733,8 @@ async function submitForm(page) {
     
     // 等待页面加载完成或导航
     await Promise.race([
-      page.waitForNavigation({ waitUntil: 'networkidle', timeout: 15000 }),
-      page.waitForTimeout(5000)
+      page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+      page.waitForTimeout(3000)
     ]).catch(() => {
       log('等待页面导航完成后超时，但继续执行', 'warn');
     });
