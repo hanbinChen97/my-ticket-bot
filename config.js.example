@@ -1,0 +1,80 @@
+/**
+ * 票务机器人配置文件 - 示例
+ * 使用说明: 
+ * 1. 将此文件复制为 config.js
+ * 2. 修改下面的个人信息为您自己的信息
+ * 3. 保存文件后即可使用
+ */
+
+module.exports = {
+  // 目标网站URL
+  targetUrl: 'https://buchung.hsz.rwth-aachen.de/angebote/aktueller_zeitraum/_Basketball_Spielbetrieb.html',
+  
+  // 浏览器配置
+  browser: {
+    headless: false, // 设置为false可以看到浏览器的运行过程
+    slowMo: 50, // 放慢操作速度，使自动化过程更容易观察（毫秒）
+    devtools: true, // 启用开发者工具
+    viewport: { width: 1280, height: 800 }, // 视口大小
+    timeout: 30000, // 全局超时时间（毫秒）
+  },
+  
+  // 目标课程时间信息
+  targetCourse: {
+    day: 'Mo', // 周一
+    time: '10:30-11:55', // 时间段
+  },
+  
+  // 选择器配置
+  selectors: {
+    // 页面主要元素的选择器
+    coursesContainer: '.bs_kurse', // 课程列表容器
+    courseItem: '.bs_kurs', // 单个课程项
+    detailsButton: '.bs_btn_details', // 详情按钮
+    bookButton: '.bs_btn_buchen', // 预订按钮
+    timeInfo: '.bs_szeit', // 时间信息
+    
+    // 弹出窗口选择器
+    popupWindow: 'body', // 弹出窗口的主体
+    popupButtons: 'button, input[type="button"], input[type="submit"], .button', // 弹出窗口中的按钮
+    confirmButton: 'input[name="buchen"]', // 确认预订按钮
+    
+    // 表单元素选择器
+    loginForm: '#login_form',
+    usernameInput: '#input_username',
+    passwordInput: '#input_password',
+    submitButton: '#btn_submit',
+  },
+  
+  // HTML保存选项
+  saveHtml: {
+    enabled: true,
+    path: './saved_pages/', // 保存HTML的路径
+  },
+  
+  // 用户凭据（应通过环境变量或安全存储获取）
+  credentials: {
+    username: '', // 填入您的用户名
+    password: '', // 填入您的密码
+  },
+  
+  // 用户信息配置 - 匿名示例（请替换为您自己的信息）
+  userInfo: {
+    gender: 'männlich', // 性别: männlich（男）, weiblich（女）
+    firstName: 'Max', // 名
+    lastName: 'Jemand', // 姓
+    address: 'Musterstraße 123', // 地址
+    zipCity: '52064 Aachen', // 邮编和城市
+    status: 'S-RWTH', // 身份状态: S-RWTH 表示 StudentIn der RWTH
+    studentId: '123456', // 学号
+    email: 'max.jemand@example.com', // 邮箱
+    phone: '01234567890', // 电话
+    acceptTerms: true, // 是否接受条款
+  },
+  
+  // 日志配置
+  logging: {
+    enabled: true,
+    level: 'info', // 可选值：debug, info, warn, error
+  }
+};
