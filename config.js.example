@@ -12,7 +12,7 @@ module.exports = {
   
   // 浏览器配置
   browser: {
-    headless: false, // 设置为false可以看到浏览器的运行过程
+    headless: true, // 设置为false可以看到浏览器的运行过程
     slowMo: 50, // 放慢操作速度，使自动化过程更容易观察（毫秒）
     devtools: true, // 启用开发者工具
     viewport: { width: 1280, height: 800 }, // 视口大小
