@@ -70,11 +70,21 @@ module.exports = {
     email: 'max.jemand@example.com', // 邮箱
     phone: '01234567890', // 电话
     acceptTerms: true, // 是否接受条款
+    bankCardNumber: '1234-5678-9012-3456', // 银行卡号
   },
   
   // 日志配置
   logging: {
     enabled: true,
     level: 'info', // 可选值：debug, info, warn, error
+  },
+
+  // 监控配置
+  monitoring: {
+    enabled: true, // 是否启用监控
+    timeSlots: [
+      { day: 'Mo', time: '08:00' }, // 示例时间段
+      { day: 'Di', time: '16:00' }, // 示例时间段
+    ],
   }
 };

@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config');
 const utils = require('./utils');
+const schedule = require('node-schedule');
 
 /**
  * 主函数 - 运行抢票流程
@@ -238,6 +239,30 @@ async function main() {
     utils.log('关闭浏览器', 'info');
     await browser.close();
   }
+}
+
+/**
+ * 监控时间并启动抢票
+ */
+function monitorTimeAndBook() {
+  const now = new Date();
+  const day = now.toLocaleString('en-US', { weekday: 'short' });
+  const time = now.toTimeString().slice(0, 5);
+
+  for (const slot of config.monitoring.timeSlots) {
+    if (slot.day === day && slot.time === time) {
+      utils.log(`时间到达: ${day} ${time}，开始抢票`, 'info');
+      main().catch(error => {
+        utils.log(`抢票失败: ${error.message}`, 'error');
+      });
+      break;
+    }
+  }
+}
+
+// 定时任务
+if (config.monitoring.enabled) {
+  schedule.scheduleJob('* * * * *', monitorTimeAndBook);
 }
 
 // 运行主函数

@@ -12,6 +12,8 @@
 - 处理页面跳转和等待
 - 提供丰富的配置选项
 - 包含异常处理机制
+- 支持定时抢票功能
+- 支持添加银行卡号到个人信息
 
 ## 项目结构
 
@@ -85,6 +87,7 @@ npx playwright install chromium
      email: '您的邮箱',
      phone: '您的电话',
      acceptTerms: true,
+     bankCardNumber: '您的银行卡号', // 新增字段
    },
    ```
    - 如需要，也可修改其他配置项

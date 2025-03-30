@@ -854,6 +854,39 @@ async function handleFinalConfirmation(page) {
   }
 }
 
+/**
+ * 获取当前时间
+ * @returns {string} 当前时间字符串，格式为 "HH:mm"
+ */
+function getCurrentTime() {
+  const now = new Date();
+  return now.toTimeString().slice(0, 5);
+}
+
+/**
+ * 检查是否是抢票时间
+ * @param {string} targetTime - 目标时间，格式为 "HH:mm"
+ * @returns {boolean} 是否是抢票时间
+ */
+function isTimeToBook(targetTime) {
+  const currentTime = getCurrentTime();
+  return currentTime === targetTime;
+}
+
+/**
+ * 处理抢票过程
+ * @returns {Promise<void>}
+ */
+async function bookTicket() {
+  try {
+    log('开始抢票流程', 'info');
+    await main();
+    log('抢票流程完成', 'info');
+  } catch (error) {
+    log(`抢票过程失败: ${error.message}`, 'error');
+  }
+}
+
 module.exports = {
   log,
   waitForElement,
@@ -872,5 +905,8 @@ module.exports = {
   fillRegistrationForm,
   submitForm,
   handleFinalConfirmation,
-  saveErrorFullPageScreenshot
+  saveErrorFullPageScreenshot,
+  getCurrentTime,
+  isTimeToBook,
+  bookTicket
 };
