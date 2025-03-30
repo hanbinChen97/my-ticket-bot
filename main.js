@@ -44,8 +44,6 @@ async function main() {
     utils.log('等待页面加载完成', 'info');
     await page.waitForLoadState('networkidle');
     
-    // 保存HTML内容
-    await utils.saveHtml(page, 'initial_page');
     utils.log('成功加载目标网站', 'info');
     
     // 获取页面标题
@@ -77,9 +75,6 @@ async function main() {
     utils.log(`成功找到目标课程!`, 'info');
     utils.log(`按钮选择器: ${targetCourse.buttonSelector}`, 'info');
     utils.log(`按钮名称: ${targetCourse.buttonName}`, 'info');
-    
-    // 保存当前页面状态
-    await utils.saveHtml(page, 'before_click');
     
     // 点击预订按钮，这可能会打开新窗口
     utils.log('准备点击预订按钮', 'info');
@@ -164,7 +159,6 @@ async function main() {
       confirmButtonSelector = `${config.selectors.popupButtons}:nth-child(${confirmButton.index + 1})`;
     }
     
-    // 修改：不再等待新窗口，而是等待当前窗口的导航完成
     utils.log('点击确认按钮并等待页面导航', 'info');
     
     // 使用waitForNavigation等待页面导航完成
@@ -177,9 +171,6 @@ async function main() {
     
     // 使用当前窗口作为表单页面
     const formPage = popupPage;
-    
-    // 保存表单页面HTML
-    await utils.saveHtml(formPage, 'form_page');
     
     // 获取表单页面标题
     const formPageTitle = await formPage.title();
