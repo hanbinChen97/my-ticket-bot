@@ -107,14 +107,12 @@ async function main() {
     await popupPage.waitForLoadState('domcontentloaded');
     utils.log('弹出窗口加载完成', 'info');
     
-    // 保存弹出窗口的HTML内容
-    await utils.saveHtml(popupPage, 'popup_window');
-    
     // 获取弹出窗口的页面标题
     const popupTitle = await popupPage.title();
     utils.log(`弹出窗口标题: ${popupTitle}`, 'info');
     
-    // 分析弹出窗口内的按钮
+    /* 
+    // 分析弹出窗口内的按钮 - 注释掉中间页面的操作
     utils.log('分析弹出窗口内的按钮', 'info');
     const popupButtons = await utils.analyzeButtons(popupPage, config.selectors.popupButtons);
     
@@ -176,8 +174,10 @@ async function main() {
     ]);
     
     utils.log('导航完成，页面已加载', 'info');
+    */
     
-    // 使用当前窗口作为表单页面
+    // 使用当前窗口作为表单页面 - 直接从popup窗口跳到表单页面
+    utils.log('直接使用弹出窗口作为表单页面', 'info');
     const formPage = popupPage;
     
     // 获取表单页面标题
